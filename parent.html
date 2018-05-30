@@ -1,0 +1,69 @@
+
+i<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Tab 1 Parent</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            html{height: 100%;width: 100%;margin: 0px;padding: 0px;background-color:#000000}
+            .container{background-color: #CCC;display:block;margin: 0 auto;width: 500px;padding: 10px;position: relative;}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>First Tab</h2>
+            <button id="start" style="margin-bottom: 10px">Start Communication </button>
+            <br />
+            <input type="text" id="message" />
+            <button id="send">Send Message</button>
+            <ul id="recivedMsgBox"></ul>
+        </div>
+
+        <script>
+            var starter=document.querySelector("#start");
+            var receiver;
+            var handshaking=false;
+            starter.onclick = (e)=> {
+                var message = document.getElementById('message');
+                starter.style.display = 'none';
+                receiver = window.open("http://XXX---yourDomain--XXX/child.html");
+                var btn = document.getElementById('send');
+                var sendMessage = () => {
+                    receiver.postMessage(message.value || "Empty", 'http://XXX---yourDomain--XXX');
+                    message.value = "";
+                }
+
+                btn.addEventListener('click', sendMessage);
+                // code for recived message from tab 2
+
+                    var recivedMsg = document.getElementById('recivedMsgBox');
+                    var receiveMessage =(e) => {
+                        if(e.data=="handshakingcallback"){
+                            handshaking=true;
+                            var newLI = document.createElement('li');
+                            newLI.appendChild(document.createTextNode("handshaking Done!"));
+                            recivedMsg.appendChild(newLI);
+                        }else{
+                        if(handshaking){
+                            var newLI = document.createElement('li');
+                            newLI.appendChild(document.createTextNode(`Message Received from tab2   ${e.data}`));
+                            recivedMsg.appendChild(newLI);
+                        }else{
+                            alert("Wait for Child window ready")
+                        }
+                }
+             }
+                window.addEventListener('message', receiveMessage);
+            }
+
+
+
+        </script>
+    </body>
+</html>

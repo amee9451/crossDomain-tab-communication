@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Tab 2 Child</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            html{height: 100%;width: 100%;margin: 0px;padding: 0px;background-color:#000000}
+            .container{background-color: #CCC;display:block;margin: 0 auto;width: 500px;padding: 10px;position: relative;}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Second Tab</h2>
+            <br />
+            <input type="text" id="message" />
+            <button id="send">Send Message</button>
+            <ul id="recivedMsgBox"></ul>
+        </div>
+
+        <script>
+            window.onload = ()=> {
+                var message = document.getElementById('message');
+                var recivedMsg = document.getElementById('recivedMsgBox');
+                var receiveMessage = (e)=> {
+                    var newLI = document.createElement('li');
+                    newLI.appendChild(document.createTextNode(`Message Received from tab1   ${e.data}`));
+                    recivedMsg.appendChild(newLI);
+                }
+                window.addEventListener('message', receiveMessage);
+
+
+
+                // code for recived message from tab 1
+                var btn = document.getElementById('send');
+                var sendMessage = ()=> {
+                    opener.postMessage(message.value || "Empty", '*');
+                    message.value="";
+                }
+                btn.addEventListener('click', sendMessage);
+
+
+                var li = document.createElement('li')
+                li.appendChild(document.createTextNode(`Handshake Done from tab1`));
+                recivedMsg.appendChild(li);
+                opener.postMessage("handshakingcallback", '*');
+            }
+
+        </script>
+    </body>
+</html>
